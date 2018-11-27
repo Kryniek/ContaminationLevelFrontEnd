@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="pl">
+    
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Strona główna</title>
+    <script src="https://unpkg.com/react/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/babel-standalone/babel.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+        crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+        crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <div id="app" class="container"></div>
+    <script type="text/babel">
+    
+    class App extends React.Component {
+        constructor(props){
+            super(props);
+            this.state = {
+                error: null,
+                isLoaded: false,
+                measurements: []
+            };
+        }
+
+        componentDidMount(){
+            fetch("http://localhost:6969/api/measurements/3351")
+                .then(res => res.json())
+                .then((result) => {
+                    this.setState({
+                        isLoaded: true,
+                        measurements : result
+                    });
+                }, (error) => {
+                    this.setState({
+                        isLoaded: true,
+                        error : error
+                    });
+                });
+        }
+
+        getLocaleDateFromString(rawDate){
+            var options = {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            };
+
+            return new Date(rawDate).toLocaleDateString([], options);
+        }
+
+        getLocaleTimeFromString(rawDate){
+            var options = {
+                hour: 'numeric',
+                minute: 'numeric'
+            };
+
+            return new Date(rawDate).toLocaleTimeString([], options);
+        }
+
+        render () {
+            const {
+                error,
+                isLoaded,
+                measurements
+            } = this.state;
+
+            if (error){
+                return <div>Wystąpił błąd</div>;
+            } else if(!isLoaded){
+                return <div>Pobieranie danych ...</div>;
+            }
+
+            return (
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th scope="col">Data pomiaru</th>
+                            <th scope="col">Czas pomiaru</th>
+                            <th scope="col">PM1</th>
+                            <th scope="col">PM25</th>
+                            <th scope="col">PM10</th>
+                            <th scope="col">Ciśnienie</th>
+                            <th scope="col">Wilgotność</th>
+                            <th scope="col">Temperatura</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {measurements.map(measurement => (
+                            <tr key={measurement.id}>
+                                <td>{this.getLocaleDateFromString(measurement.fromDateTime)}</td>
+                                <td>{this.getLocaleTimeFromString(measurement.fromDateTime)}</td>
+                                <td>{measurement.pm1}</td>
+                                <td>{measurement.pm25}</td>
+                                <td>{measurement.pm10}</td>
+                                <td>{measurement.pressure}</td>
+                                <td>{measurement.humidity}</td>
+                                <td>{measurement.temperature}</td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            );
+        }
+    };
+
+    ReactDOM.render(
+        <App/>,
+      document.getElementById('app')
+    );
+  </script>
+</body>
+
+</html>
