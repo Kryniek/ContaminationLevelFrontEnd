@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 
 import './../css/component/MeasurementTableHeader.css';
 
@@ -7,14 +7,14 @@ export default class MeasurementTableHeader extends Component {
         return (
             <thead className="MeasurementTableHeaderComponent">
                 <tr>
-                    <th scope="col">Data pomiaru</th>
-                    <th scope="col">Czas pomiaru</th>
-                    <th scope="col">PM1</th>
-                    <th scope="col">PM25</th>
-                    <th scope="col">PM10</th>
-                    <th scope="col">Ciśnienie</th>
-                    <th scope="col">Wilgotność</th>
-                    <th scope="col">Temperatura</th>
+                    <th>Data pomiaru</th>
+                    <th>Czas pomiaru</th>
+                    <th>PM1</th>
+                    <th>PM25</th>
+                    <th>PM10</th>
+                    <th>Ciśnienie</th>
+                    <th>Wilgotność</th>
+                    <th>Temperatura</th>
                 </tr>
             </thead>
         );

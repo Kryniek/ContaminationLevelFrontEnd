@@ -1,8 +1,11 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
+import Container from 'react-bootstrap/Container'
+import Table from 'react-bootstrap/Table'
+import Nav from 'react-bootstrap/Nav'
 
 import './../css/component/ContaminationLevel.css';
 
-import { API_URL } from './constant/ApiConstants';
+import {API_URL} from './constant/ApiConstants';
 
 import Loading from './util/component/Loading';
 import Error from './util/component/Error';
@@ -19,40 +22,30 @@ export default class ContaminationLevel extends Component {
       measurements: []
     };
 
-    this.getLoadedView = this.getLoadedView.bind(this);
+    this.getLoadedView = this
+      .getLoadedView
+      .bind(this);
+    this.getMeasurements = this
+      .getMeasurements
+      .bind(this);
   }
 
   componentDidMount() {
-    fetch(API_URL + "/api/measurements/3351")
-      .then(res => res.json())
-      .then((result) => {
-        this.setState({
-          isLoaded: true,
-          measurements: result
-        });
-      }, (error) => {
-        this.setState({
-          isLoaded: true,
-          error: error
-        });
-      });
+    this.getMeasurements();
   }
 
   render() {
-    const {
-      error,
-      isLoaded
-    } = this.state;
+    const {error, isLoaded} = this.state;
 
     if (isLoaded) {
       if (error) {
-        return <Error />;
+        return <Error/>;
       } else {
         return this.getLoadedView();
       }
     }
 
-    return <Loading />;
+    return <Loading/>;
   }
 
   getLoadedView() {
@@ -60,17 +53,72 @@ export default class ContaminationLevel extends Component {
 
     return (
       <div className="ContaminationLevelComponent">
-        <div className="container">
-          <table className="table table-hover">
-            <MeasurementTableHeader />
+        <Container>
+          <Nav
+            justify
+            variant="tabs"
+            defaultActiveKey="3351"
+            onSelect={eventKey => this.getMeasurements(eventKey)}>
+            <Nav.Item>
+              <Nav.Link eventKey="3351">Wejherowo ul. Skargi</Nav.Link>
+            </Nav.Item>
+            <Nav.Item>
+              <Nav.Link eventKey="6230">Wejherowo ul. Sobieskiego</Nav.Link>
+            </Nav.Item>
+          </Nav>
+          <Table hover striped bordered>
+            <MeasurementTableHeader/>
             <tbody>
-              {measurements.map(measurement => (
-                <Measurement measurement={measurement} />
-              ))}
+              {measurements.map(measurement => (<Measurement measurement={measurement}/>))}
             </tbody>
-          </table>
-        </div>
+          </Table>
+        </Container>
       </div>
     );
+  }
+
+  getMeasurements(installationId = 3351) {
+    this.setState({isLoaded: false});
+
+    fetch(API_URL + "/api/measurements/" + installationId)
+      .then(res => res.json())
+      .then((result) => {
+        this.setState({isLoaded: true, measurements: result});
+      }, (error) => {
+        this.setState({
+          isLoaded: true,
+          // error: error
+          measurements: [
+            {
+              id: 1,
+              fromDateTime: new Date(),
+              pm1: 1.2,
+              pm25: 1.3,
+              pm10: 1.4,
+              pressure: 12.00,
+              humidity: 30.2,
+              temperature: 12.9
+            }, {
+              id: 2,
+              fromDateTime: new Date(),
+              pm1: 1.2,
+              pm25: 1.3,
+              pm10: 1.4,
+              pressure: 12.00,
+              humidity: 30.2,
+              temperature: 12.9
+            }, {
+              id: 3,
+              fromDateTime: new Date(),
+              pm1: 1.2,
+              pm25: 1.3,
+              pm10: 1.4,
+              pressure: 12.00,
+              humidity: 30.2,
+              temperature: 12.9
+            }
+          ]
+        });
+      });
   }
 }
