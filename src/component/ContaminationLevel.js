@@ -85,40 +85,7 @@ export default class ContaminationLevel extends Component {
       .then((result) => {
         this.setState({isLoaded: true, measurements: result});
       }, (error) => {
-        this.setState({
-          isLoaded: true,
-          // error: error
-          measurements: [
-            {
-              id: 1,
-              fromDateTime: new Date(),
-              pm1: 1.2,
-              pm25: 1.3,
-              pm10: 1.4,
-              pressure: 12.00,
-              humidity: 30.2,
-              temperature: 12.9
-            }, {
-              id: 2,
-              fromDateTime: new Date(),
-              pm1: 1.2,
-              pm25: 1.3,
-              pm10: 1.4,
-              pressure: 12.00,
-              humidity: 30.2,
-              temperature: 12.9
-            }, {
-              id: 3,
-              fromDateTime: new Date(),
-              pm1: 1.2,
-              pm25: 1.3,
-              pm10: 1.4,
-              pressure: 12.00,
-              humidity: 30.2,
-              temperature: 12.9
-            }
-          ]
-        });
+        this.setState({isLoaded: true, error: error});
       });
   }
 }
